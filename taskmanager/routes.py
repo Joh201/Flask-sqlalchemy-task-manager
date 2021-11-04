@@ -26,7 +26,7 @@ def add_category():
     return render_template("add_category.html")
 
 
-@app.route("/edit_category/<int:category_id>", methods=["Get", "Post"])
+@app.route("/edit_category/<int:category_id>", methods=["GET", "POST"])
 def edit_category(category_id):
     category = Category.query.get_or_404(category_id)
     if request.method == "POST":
@@ -61,7 +61,7 @@ def add_task():
     return render_template("add_task.html", categories=categories)
 
 
-@app.route("/edit_task/<int:task_id>", methods=["Get", "Post"])
+@app.route("/edit_task/<int:task_id>", methods=["GET", "POST"])
 def edit_task(task_id):
     task = Task.query.get_or_404(task_id)
     categories = list(Category.query.order_by(Category.category_name).all())
@@ -75,3 +75,10 @@ def edit_task(task_id):
         return redirect(url_for("home"))
     return render_template("edit_task.html", task=task, categories=categories)
 
+
+@app.route("/delete_task/<int:task_id>")
+def delete_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    db.session.delete(task)
+    db.session.commit()
+    return redirect(url_for("home"))
